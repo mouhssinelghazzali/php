@@ -220,11 +220,10 @@ foreach($entites as $key=>$value)
 ?>
 
 <fieldset><legend>Axe / Ligne / Gare</legend>
-<select name="axe" onchange="Axer(this.value);Recharger();">
-<option value="Axe">Axe</option>
-<option value="gare">Gare</option>
-<option value="ligne">Ligne</option>
-
+<select name="type" onchange="this.form.submit()" >
+  <option value="is_axe" <?php if (isset($_POST['type']) && $_POST['type']=="is_axe") { echo "selected";} ?>>Axe</option>
+  <option value="is_gare" <?php if (isset($_POST['type']) && $_POST['type']=="is_gare") { echo "selected";} ?> >Gare</option>
+  <option value="is_ligne" <?php if (isset($_POST['type']) && $_POST['type']=="is_ligne") { echo "selected";} ?> >ligne</option>
 </select>
 </fieldset>
 
@@ -268,7 +267,8 @@ while($listegroup = $requetegroup->fetch())
 	
 		if($affiche_item)
 			{
-			$text_options .= "<option value='".$listegroup['crit_mere']."' style='font-weight:bold; ' class='survol' >&#8594;     ".$listegroup['libelle']."</option>";
+			$text_options .= "<option value='".$listegroup['crit_mere']."' style='font-weight:bold; ' class='survol' >&#8594;   
+			  ".$listegroup['libelle']."</option>";
 			}
 			
 	
@@ -350,10 +350,7 @@ Attributes:
 
 
 
-Jquery: 
-$(document).ready(function() {
-$('.city').find('option:contains('2019V1)').hide();
-});
+
 
 
 
