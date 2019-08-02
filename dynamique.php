@@ -181,7 +181,7 @@ if($_SESSION['type']<4)
 <select name="typevague" onchange="Typevaguer(this.value);Recharger();" id="city" class="city">
 <option></option>
 <?php
-$sqlvague = "SELECT vague FROM t_graphique GROUP BY vague";
+
 $requetevague = $bdd->query($sqlvague);
 while($listevague = $requetevague->fetch())
 {
@@ -231,7 +231,7 @@ foreach($entites as $key=>$value)
 <select name="frequence" onchange="Frequencer(this.value);Recharger();">
 <option></option>
 <?php
-$sqlfrequence = "SELECT frequence FROM t_graphique GROUP BY frequence";
+
 $requetefrequence = $bdd->query($sqlfrequence);
 while($listefrequence = $requetefrequence->fetch())
 {
@@ -248,6 +248,42 @@ $requetefrequence->closeCursor();
 <select name="theme" onchange="Themer(this.value);" id="theme" size="8">
 
 <?php
+
+
+$par_type=isset($_POST['type'])?$_POST['type']:"is_axe";
+
+
+function theme_select($par_type){
+   global $bdd;
+   $request="SELECT distinct libelle_theme FROM said_datamap WHERE ".$par_type."=1";
+   $retour=$bdd->query($request);
+   $result='';
+   while ( $data=$retour->fetch(PDO::FETCH_ASSOC)) {
+
+     $result.='<optgroup label="'.$data["libelle_theme"].'"></optgroup>';
+     $result.=general_theme($par_type,$data["libelle_theme"]);
+
+   }
+   
+
+   return $result;
+
+}
+
+function general_theme($par_type,$par_theme){
+    global $bdd;
+    $par_theme='"'.$par_theme.'"';
+    $request="SELECT distinct sous_theme FROM said_datamap WHERE ".$par_type."=1 AND libelle_theme=".$par_theme."";
+    $retour=$bdd->query($request);
+    $result='';
+    
+    while ( $data=$retour->fetch(PDO::FETCH_ASSOC)) {
+    $result.='<option value="'.$data["sous_theme"].'">-----;'.$data["sous_theme"].'</option>';
+ 
+    }
+    return $result;
+ }
+
 $sqlgroup="SELECT libelle, crit_mere, chartype FROM t_critere WHERE ordre<10 ORDER BY ordre";
 $requetegroup = $bdd->query($sqlgroup);
 $text_options = "";
@@ -284,7 +320,8 @@ while($listegroup = $requetegroup->fetch())
 		$affichess_item = false;
 		while($listessfiltre = $requetessfiltre->fetch())
 		{
-			if($listedroits[$listessfiltre['variable']]){$affichess_item = true;}//else{echo "<option>".$listessfiltre['variable']." = ".$listedroits[$listessfiltre['variable']]."</option>";}
+			if($listedroits[$listessfiltre['variable']]){$affichess_item = true;}
+			//else{echo "<option>".$listessfiltre['variable']." = ".$listedroits[$listessfiltre['variable']]."</option>";}
 		}
 		$requetessfiltre->closeCursor();
 		
@@ -314,25 +351,11 @@ echo $text_options;
 </select>
 </fieldset>
 
-<fieldset><legend>Dimension du graphique</legend>
-<label for="id_largeur" style="display:inline;vertical-align: 20%;">largeur</label>
-<input type="number" name="id_largeur" id="id_largeur" min="350" max="1920" step="50" value="400" maxlength="4" onChange='flargeur(this.value)' style="width:50px;" >
-<label for="id_hauteur" style="display:inline;vertical-align: 20%;">hauteur</label>
-<input type="number" name="id_hauteur" id="id_hauteur" min="350" max="1080" step="50" value="400" maxlength="4" onChange='fhauteur(this.value)' style="width:50px;" >
-<br>
-<button><a href="index.php?id=12">Réinitialisation </a></button>
-</fieldset>
+
 
 <div style="margin:auto;text-align: center;">
 
-<!-- AngularGauge - Configuring the Gauge inner and outer radius
 
-Attributes:
-   
-    # gaugeOuterRadius
-    # gaugeInnerRadius
-    
--->
 <div id="chart1" style="display:inline-block;"></div>
 <div id="chart2" style="display:inline-block;"></div>
 <div id="chart3" style="display:inline-block;"></div>

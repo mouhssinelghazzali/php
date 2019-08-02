@@ -11,6 +11,8 @@ catch (Exception $e)
 }
 
 $par_type=isset($_POST['type'])?$_POST['type']:"is_axe";
+$theme=isset($_POST['theme'])?$_POST['theme']:"ssss";
+var_dump($theme);
 
 
 
@@ -45,15 +47,29 @@ function general_theme($par_type,$par_theme){
  
     }
     return $result;
- }
-					 $vague=isset($_POST['vague'])?$_POST['vague']:"2019V1";
+ }					$ident_eric ='';
+					 	$vague=isset($_POST['vague'])?$_POST['vague']:"2019V1";
+					if ($_POST["type"] == "is_axe")
+					{
+						$ident_eric =  "Axe";
+					}
+					else if($_POST["type"] == "is_gare")
+					{
+						$ident_eric =  "Q1";
 
-						 $sql  = $bdd->query("select ident_eric,vague from t_graphique where vague='".$vague."' and ident_eric REGEXP '^axe'");
+					}
+					else{
+						$ident_eric =  "REGION";
+
+					}
+						 $sql  = $bdd->query("select ident_eric,vague from t_graphique where vague='".$vague."' and ident_eric REGEXP '^$ident_eric'");
 					
 
 						 $dbdata  = array();
 						 while ($row = $sql->fetchall()) {
 								 $dbdata [] = $row;
+
+					
 						 }
 						 echo json_encode($dbdata );
 
@@ -66,27 +82,13 @@ function general_theme($par_type,$par_theme){
 <form method="post">
 
 
-
-
-
-<select name="vague" onchange="Typevaguer(this.value);Recharger();" id="city" class="city">
-
-<?php
-$sqlvague = "SELECT vague FROM t_graphique GROUP BY vague";
-$requetevague = $bdd->query($sqlvague);
-while($listevague = $requetevague->fetch())
-{
-	echo "<option";
-	if (isset($_POST['type']) && $_POST['type']== $type) { echo "selected";}
-
-
-	echo ">".$listevague['vague']."</option>";
-
-}
-$requetevague->closeCursor();
-?>
-</select>
+<fieldset><legend>Vague</legend>
+<select name="vague" id="vague" onchange="this.form.submit()">
+<option value="2019V1" <?php if (isset($_POST['vague']) && $_POST['vague']=="2019V1") { echo "selected";} ?>>2019V1</option>
+<option value="2019V2" <?php if (isset($_POST['vague']) && $_POST['vague']=="2019V2") { echo "selected";} ?>>2019V2</option></select>
 </fieldset>
+
+
 
 <select name="type" onchange="this.form.submit()" >
   <option value="is_axe" <?php if (isset($_POST['type']) && $_POST['type']=="is_axe") { echo "selected";} ?>>Axe</option>
@@ -97,18 +99,11 @@ $requetevague->closeCursor();
 
 	<legend>Theme</legend>
 
-<select name="theme" onchange="Themer(this.value);" id="theme" size="8">
+<select name="theme" onchange="this.form.submit()" onchange="Themer(this.value);" id="theme" size="8" >
  <?php echo theme_select($par_type) ?>
 
 </select>
 
 </form>
-<script>
 
-function Typevaguer(valeur)
-{
-	typevague = valeur;
-	Recharger();
-}
-</script>
 
