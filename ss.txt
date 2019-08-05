@@ -1,0 +1,80 @@
+<?php 
+include("connection.php");
+include("includes/fusioncharts.php");
+function fill_vague(){
+   global $bdd;
+   $query="SELECT DISTINCT vague from t_graphique";
+   $output='';
+   $check='';
+   while ( $data=$retour->fetch(PDO::FETCH_ASSOC)) {
+   $output.='<option  value="'.$data["vague"].'"'.$check.''.$data["vague"].'</option>';
+   }
+   return $output;
+}
+function fill_stheme($type,$theme){
+   global $bdd;
+   $theme='"'.$theme.'"';
+   $query="SELECT distinct s_theme FROM said_datamap WHERE ".$type."=1 AND lib_theme=".$theme."";
+   $retour=$bdd->query($query);
+   $output='';
+   $check='';
+   while ( $data=$retour->fetch(PDO::FETCH_ASSOC)) {
+   $output.='<option class="survol" value="'.$data["s_theme"].'"'.$check.'>&#8594;'.$data["s_theme"].'</option>';
+   }
+   return $output;
+}
+
+function fill_theme($type){
+   global $bdd;
+   $query="SELECT distinct lib_theme FROM said_datamap WHERE ".$type."=1";
+   $retour=$bdd->query($query);
+   $output='';
+   $check='';
+   while ( $data=$retour->fetch(PDO::FETCH_ASSOC)) {
+     
+     $output.='<optgroup label="'.$data["lib_theme"].'"></optgroup>';
+     $output.=fill_stheme($type,$data["lib_theme"]);
+   }
+   
+
+   return $output;
+
+}
+
+
+
+function get_question($sthem){
+global $bdd;
+	$resultat=array();
+
+    $query="SELECT question from said_datamap where s_theme='".$sthem."'";
+    $retour=$bdd->query($query);
+    $i=0;
+    while ( $data=$retour->fetch(PDO::FETCH_ASSOC)) {
+     $resultat[$i]=$data["question"];
+     $i++;
+   }
+    return $resultat;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ ?>
